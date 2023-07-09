@@ -122,6 +122,80 @@ def scrape_company_data(session, view_id, query, output_csv_path):
 
     out_f.close()
 
+def scrape_people_data(session, view_id, query, output_csv_path):
+    page = 1
+
+    json_data = {
+        "finder_view_id": view_id,
+        # "q_keywords": query,
+        "q_person_name":"ac",
+        "page": page,
+        "display_mode": "explorer_mode",
+        "per_page": 25,
+        "open_factor_names": [],
+        "num_fetch_result": 1,
+        "context": "people-index-page",
+        "show_suggestions": False,
+        # Based on:
+        # https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits
+        "ui_finder_random_seed": "".join(
+            random.choice(string.ascii_lowercase + string.digits) for _ in range(6)
+        ),
+        "cacheKey": int(time.time()),
+    }
+
+    out_f = open(output_csv_path, "w", encoding="utf-8")
+    csv_writer = csv.DictWriter(
+        out_f,
+        fieldnames=["name","title","linkedin_url", "website_url","email_status","email", "phone"],
+        lineterminator="\n",
+    )
+    csv_writer.writeheader()
+
+    for i in range(5):
+        resp = session.post(
+            # "https://app.apollo.io/api/v1/mixed_companies/search", json=json_data
+            "https://app.apollo.io/api/v1/mixed_people/search", json=json_data
+        )
+        print(resp.url)
+
+        json_dict = resp.json()
+        print(json_dict)
+        for org_dict in json_dict.get("people", []):
+            name = org_dict.get("name")
+            title = org_dict.get("title")
+            linkedin_url = org_dict.get("linkedin_url")
+            website_url = org_dict.get("website_url")
+            email_status = org_dict.get("email_status")
+            email = org_dict.get("email")
+            phone = org_dict.get("phone_numbers")
+
+            row = {
+                "name": name,
+                "title": title,
+                "linkedin_url": linkedin_url,
+                "website_url": website_url,
+                "email_status": email_status,
+                "email": email,
+                "phone": phone,
+            }
+
+            # pprint(row)
+            csv_writer.writerow(row)
+        try:
+            pagination_dict = json_dict.get("pagination")
+            total_pages = pagination_dict.get("total_pages")
+        except Exception as e:
+            print(e)
+            write_file("exception",json_dict)
+
+        if total_pages == page:
+            break
+
+        page += 1
+        json_data["page"] = page
+
+    out_f.close()
 
 def main():
     username = "hieule1191997@gmail.com"
@@ -131,10 +205,8 @@ def main():
     session, view_id = create_session(username, password)
 
     print(session.cookies)
-    scrape_company_data(session, view_id, query, output_csv_path)
+    scrape_people_data(session, view_id, query, output_csv_path)
 
 
 if __name__ == '__main__':
     main()
-
-    
