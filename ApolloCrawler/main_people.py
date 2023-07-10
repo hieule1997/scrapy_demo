@@ -53,6 +53,7 @@ def write_file(file_name,text):
     f.close()
 
 def scrape_company_data(session, view_id, query, output_csv_path):
+    output_csv_path = "company.csv"
     page = 1
 
     json_data = {
@@ -123,6 +124,7 @@ def scrape_company_data(session, view_id, query, output_csv_path):
     out_f.close()
 
 def scrape_people_data(session, view_id, query, output_csv_path):
+    output_csv_path = "people.csv"
     page = 1
 
     json_data = {
@@ -197,15 +199,30 @@ def scrape_people_data(session, view_id, query, output_csv_path):
 
     out_f.close()
 
+def getCompanyId(session, view_id, query, output_csv_path):
+    output_csv_path = "company_id.csv"
+    
+
+def getJobTitle(session, view_id, query, output_csv_path):
+    output_csv_path = "JobTitle.csv"
+    pass
+
+def getLocation(session, view_id, query, output_csv_path):
+    output_csv_path = "Location.csv"
+    pass
+
+def getIndustryKeywords(session, view_id, query, output_csv_path):
+    output_csv_path = "IndustryKeywords.csv"
+    pass
+
 def main():
     username = "hieule1191997@gmail.com"
     password = "minhhieu1997"
     query = "add"
-    output_csv_path = "aplo.csv"
     session, view_id = create_session(username, password)
 
     print(session.cookies)
-    scrape_people_data(session, view_id, query, output_csv_path)
+    scrape_people_data(session, view_id, query)
 
 
 if __name__ == '__main__':
