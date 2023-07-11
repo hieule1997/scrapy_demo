@@ -1,5 +1,5 @@
-Scapy apollo web
-get Job title  
+# Scapy apollo web
+### Get Job title  
 url:
 ```
 /api/v1/tags/search?q_tag_fuzzy_name=man&kind=person_title&display_mode=fuzzy_select_mode&cacheKey=1688959676223
@@ -14,7 +14,7 @@ param:
 
 kind : person_title
 
-Get people search  
+### Get people search  
 url:
 ```
 https://app.apollo.io/api/v1/mixed_people/search
@@ -63,7 +63,6 @@ lưu ý :
     + is known
 
     + is unknow
-
 * Employees  
     + predefine Range :  
     organization_num_employees_ranges: ["21,50"] là `# Employees`
@@ -87,7 +86,7 @@ lưu ý :
 
 
 
-Company
+### Company
 url:
 ```
 /api/v1/organizations/search
@@ -100,7 +99,7 @@ payload:
     "cacheKey": 1688980305668
 }
 ```
-Location:  
+### Location:  
 url :  
 ```
 /api/v1/tags/search?q_tag_fuzzy_name=%C3%A1&exclude_categories%5B%5D=US%20State&kind=location&display_mode=fuzzy_select_mode&cacheKey=1688980440347
@@ -115,7 +114,7 @@ cacheKey: 1688980440347
 ```
 
 
-Industry & Keywords :  
+### Industry & Keywords :  
 url :  
 ```
 /api/v1/tags/search?q_tag_fuzzy_name=&kind=linkedin_industry&display_mode=fuzzy_select_mode&cacheKey=1688980514814
@@ -127,3 +126,39 @@ kind: linkedin_industry
 display_mode: fuzzy_select_mode
 cacheKey: 1688980514814
 ```
+
+
+### Get All intent data topic
+url : GET
+```
+/api/v1/intent_data_topics/get_all_intent_data_topics?cacheKey=1689043182614
+```
+
+### Get check employee number 
+URL : POST
+```
+/api/v1/mixed_companies/facets
+```
+payload 
+```
+{
+    "finder_view_id": "5b6dfc5a73f47568b2e5f11c",
+    "page": 1,
+    "q_organization_name": "abcd",
+    "display_mode": "explorer_mode",
+    "open_factor_names": [
+        "organization_num_employees_ranges"
+    ],
+    "context": "companies-index-page",
+    "cacheKey": 1689043496444
+}
+```
+Lưu ý : open_factor_names
+### Management Level
+
+person_seniorities[] call People  
+
+URL  
+`/api/v1/mixed_people/facets`
+
+    
