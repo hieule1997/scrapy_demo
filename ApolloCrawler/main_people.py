@@ -123,13 +123,13 @@ def scrape_company_data(session, view_id, query, output_csv_path):
 
     out_f.close()
 
-def scrape_people_data(session, view_id, query, output_csv_path):
+def scrape_people_data(session, view_id, query):
     output_csv_path = "people.csv"
     page = 1
 
     json_data = {
         "finder_view_id": view_id,
-        # "q_keywords": query,
+        "q_keywords": query,
         "q_person_name":"ac",
         "page": page,
         "display_mode": "explorer_mode",
@@ -187,8 +187,8 @@ def scrape_people_data(session, view_id, query, output_csv_path):
         try:
             pagination_dict = json_dict.get("pagination")
             total_pages = pagination_dict.get("total_pages")
-        except Exception as e:
-            print(e)
+        except Exception as ex:
+            print(ex)
             write_file("exception",json_dict)
 
         if total_pages == page:
