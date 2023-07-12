@@ -85,7 +85,6 @@ def scrape_company_data(session, view_id, query, output_csv_path):
     for i in range(5):
         resp = session.post(
             "https://app.apollo.io/api/v1/mixed_companies/search", json=json_data
-            # "https://app.apollo.io/api/v1/mixed_people/search", json=json_data
         )
         print(resp.url)
 
@@ -97,7 +96,6 @@ def scrape_company_data(session, view_id, query, output_csv_path):
             website_url = org_dict.get("website_url")
             primary_domain = org_dict.get("primary_domain")
             phone = org_dict.get("phone")
-
             row = {
                 "name": name,
                 "linkedin_url": linkedin_url,
@@ -105,7 +103,6 @@ def scrape_company_data(session, view_id, query, output_csv_path):
                 "primary_domain": primary_domain,
                 "phone": phone,
             }
-
             # pprint(row)
             csv_writer.writerow(row)
         try:
@@ -146,7 +143,7 @@ def scrape_people_data(session, view_id, query):
         "cacheKey": int(time.time()),
     }
 
-    out_f = open(output_csv_path, "w", encoding="utf-8")
+    out_f = open(output_csv_path, "a", encoding="utf-8")
     csv_writer = csv.DictWriter(
         out_f,
         fieldnames=["name","title","linkedin_url", "website_url","email_status","email", "phone"],
@@ -199,30 +196,326 @@ def scrape_people_data(session, view_id, query):
 
     out_f.close()
 
+def getCompanyId(session, view_id, query_name, output_csv_path):
+    output_csv_path = "company_id.csv"
+    out_f = open(output_csv_path, "a", encoding="utf-8")
+    csv_writer = csv.DictWriter(
+        out_f,
+        fieldnames=["id","company_name"],
+        lineterminator="\n",
+    )
+    json_data = {
+        "q_organization_fuzzy_name":query_name,
+        "display_mode":"fuzzy_select_mode",
+        
+        "cacheKey": int(time.time()),
+    }
+    resp = session.post(
+        "https://app.apollo.io//api/v1/organizations/search", json=json_data
+    )
+    print(resp.url)
+    json_dict = resp.json()
+    print(json_dict)
+    for org_dict in json_dict.get("organizations", []):
+        name = org_dict.get("name")
+        id_company = org_dict.get("id")
+
+        row = {
+            "id": id_company,
+            "company_name": name,
+        }
+
+        # pprint(row)
+        csv_writer.writerow(row)
+        # try:
+        #     pagination_dict = json_dict.get("pagination")
+        #     total_pages = pagination_dict.get("total_pages")
+        # except Exception as e:
+        #     print(e)
+        #     write_file("exception",json_dict)
+    # page += 1
+    # json_data["page"] = page
+
+    out_f.close()
+def getCompanyData(session, view_id, query, output_csv_path):
+    output_csv_path = "company.csv"
+    page = 1
+
+    json_data = {
+        "finder_view_id": view_id,
+        "q_organization_name": query,
+        "page": page,
+        "display_mode": "explorer_mode",
+        "per_page": 25,
+        "open_factor_names": [],
+        "num_fetch_result": 1,
+        "context": "companies-index-page",
+        "show_suggestions": False,
+        # Based on:
+        # https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits
+        "ui_finder_random_seed": "".join(
+            random.choice(string.ascii_lowercase + string.digits) for _ in range(6)
+        ),
+        "cacheKey": int(time.time()),
+    }
+
+    out_f = open(output_csv_path, "w", encoding="utf-8")
+    csv_writer = csv.DictWriter(
+        out_f,
+        fieldnames=["name", "linkedin_url", "website_url", "primary_domain", "phone"],
+        lineterminator="\n",
+    )
+    csv_writer.writeheader()
+
+    for i in range(5):
+        resp = session.post(
+            "https://app.apollo.io/api/v1/mixed_companies/search", json=json_data
+        )
+        print(resp.url)
+
+        json_dict = resp.json()
+        print(json_dict)
+        for org_dict in json_dict.get("organizations", []):
+            name = org_dict.get("name")
+            linkedin_url = org_dict.get("linkedin_url")
+            website_url = org_dict.get("website_url")
+            primary_domain = org_dict.get("primary_domain")
+            phone = org_dict.get("phone")
+
+            row = {
+                "name": name,
+                "linkedin_url": linkedin_url,
+                "website_url": website_url,
+                "primary_domain": primary_domain,
+                "phone": phone,
+            }
+            # pprint(row)
+            csv_writer.writerow(row)
+        try:
+            pagination_dict = json_dict.get("pagination")
+            total_pages = pagination_dict.get("total_pages")
+        except Exception as ex:
+            print(ex)
+            write_file("exception",json_dict)
+
+        if total_pages == page:
+            break
+
+        page += 1
+        json_data["page"] = page
+
+    out_f.close()
+
 def getCompanyId(session, view_id, query, output_csv_path):
     output_csv_path = "company_id.csv"
+    out_f = open(output_csv_path, "a", encoding="utf-8")
+    csv_writer = csv.DictWriter(
+        out_f,
+        fieldnames=["id","company_name"],
+        lineterminator="\n",
+    )
+    json_data = {
+        "q_organization_fuzzy_name":query_name,
+        "display_mode":"fuzzy_select_mode",
+        
+        "cacheKey": int(time.time()),
+    }
+    resp = session.post(
+        "https://app.apollo.io//api/v1/organizations/search", json=json_data
+    )
+    print(resp.url)
+    json_dict = resp.json()
+    print(json_dict)
+    for org_dict in json_dict.get("organizations", []):
+        name = org_dict.get("name")
+        id_company = org_dict.get("id")
+
+        row = {
+            "id": id_company,
+            "company_name": name,
+        }
+
+        # pprint(row)
+        csv_writer.writerow(row)
+        # try:
+        #     pagination_dict = json_dict.get("pagination")
+        #     total_pages = pagination_dict.get("total_pages")
+        # except Exception as e:
+        #     print(e)
+        #     write_file("exception",json_dict)
+    # page += 1
+    # json_data["page"] = page
+
+    out_f.close()
+def getCompanyData(session, view_id, query, output_csv_path):
+    output_csv_path = "company.csv"
+    page = 1
+
+    json_data = {
+        "finder_view_id": view_id,
+        "q_organization_name": query,
+        "page": page,
+        "display_mode": "explorer_mode",
+        "per_page": 25,
+        "open_factor_names": [],
+        "num_fetch_result": 1,
+        "context": "companies-index-page",
+        "show_suggestions": False,
+        # Based on:
+        # https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits
+        "ui_finder_random_seed": "".join(
+            random.choice(string.ascii_lowercase + string.digits) for _ in range(6)
+        ),
+        "cacheKey": int(time.time()),
+    }
+
+    out_f = open(output_csv_path, "w", encoding="utf-8")
+    csv_writer = csv.DictWriter(
+        out_f,
+        fieldnames=["name", "linkedin_url", "website_url", "primary_domain", "phone"],
+        lineterminator="\n",
+    )
+    csv_writer.writeheader()
+
+    for i in range(5):
+        resp = session.post(
+            "https://app.apollo.io/api/v1/mixed_companies/search", json=json_data
+        )
+        print(resp.url)
+
+        json_dict = resp.json()
+        print(json_dict)
+        for org_dict in json_dict.get("organizations", []):
+            name = org_dict.get("name")
+            linkedin_url = org_dict.get("linkedin_url")
+            website_url = org_dict.get("website_url")
+            primary_domain = org_dict.get("primary_domain")
+            phone = org_dict.get("phone")
+
+            row = {
+                "name": name,
+                "linkedin_url": linkedin_url,
+                "website_url": website_url,
+                "primary_domain": primary_domain,
+                "phone": phone,
+            }
+            # pprint(row)
+            csv_writer.writerow(row)
+        try:
+            pagination_dict = json_dict.get("pagination")
+            total_pages = pagination_dict.get("total_pages")
+        except Exception as e:
+            print(e)
+            write_file("exception",json_dict)
+
+        if total_pages == page:
+            break
+
+        page += 1
+        json_data["page"] = page
+
+    out_f.close()
+def getJobTitle(session, query):
+    param = f'kind=person_title&q_tag_fuzzy_name={query}&display_mode=fuzzy_select_mode&per_page=2000&cacheKey={int(time.time())}'
+    resp = session.get("https://app.apollo.io/api/v1/tags/search?"+param)
     
+    lenArr = len(json_dict.get("tags",[]))
+    if lenArr >= 2000:
+        for i in string.ascii_lowercase:
+            getJobTitle(session, query+i)
+    else:
+        output_csv_path = "JobTitle.csv"
+        out_f = open(output_csv_path, "a", encoding="utf-8")
+        csv_writer = csv.DictWriter(
+            out_f,
+            fieldnames=["id", "cleaned_name"],
+            lineterminator="\n",
+        )
+        csv_writer.writeheader()
+        csv_writer.writerows(arr_dict)
 
-def getJobTitle(session, view_id, query, output_csv_path):
-    output_csv_path = "JobTitle.csv"
-    pass
-
-def getLocation(session, view_id, query, output_csv_path):
+def getLocation(session,query):
     output_csv_path = "Location.csv"
-    pass
+    param = f'kind=location&q_tag_fuzzy_name={query}&display_mode=fuzzy_select_mode&per_page=200&cacheKey={int(time.time())}'
+    print(param)
+    resp = session.get(
+        "https://app.apollo.io/api/v1/tags/search?"+param)
+    out_f = open(output_csv_path, "a", encoding="utf-8")
+    csv_writer = csv.DictWriter(
+        out_f,
+        fieldnames=["id", "cleaned_name"],
+        lineterminator="\n",
+    )
+    csv_writer.writeheader()
+    json_dict = resp.json()
+    print(json_dict)
+    for org_dict in json_dict.get("tags",[]):
+        id = org_dict.get("id")
+        cleaned_name = org_dict.get("cleaned_name")
+        # print(value,count)
+        row = {
+            "id": id,
+            "cleaned_name": cleaned_name,
+        }
+        csv_writer.writerow(row)
 
-def getIndustryKeywords(session, view_id, query, output_csv_path):
-    output_csv_path = "IndustryKeywords.csv"
-    pass
+def getLinkinIndustryKeywords(session):
+    output_csv_path = "LinkinIndustryKeywords.csv"
+    out_f = open(output_csv_path, "a", encoding="utf-8")
+    csv_writer = csv.DictWriter(
+        out_f,
+        fieldnames=["id", "cleaned_name"],
+        lineterminator="\n",
+    )
+    csv_writer.writeheader()
+    param = f'kind=linkedin_industry&display_mode=fuzzy_select_mode&per_page=200&cacheKey={int(time.time())}'
+    resp = session.get("https://app.apollo.io/api/v1/tags/search?"+param)
+    json_dict = resp.json()
+    print(json_dict)
+    for org_dict in json_dict.get("tags",[]):
+        id = org_dict.get("id")
+        cleaned_name = org_dict.get("cleaned_name")
+        # print(value,count)
+        row = {
+            "id": id,
+            "cleaned_name": cleaned_name,
+        }
+        csv_writer.writerow(row)
+
+def getEmployeeNumber(session,view_id,query_name):
+    json_data = {
+    "finder_view_id": view_id,
+    "page": 1,
+    "q_organization_name": query_name,
+    "display_mode": "explorer_mode",
+    "open_factor_names": [
+        "organization_num_employees_ranges"
+    ],
+    "context": "companies-index-page",
+    "cacheKey": int(time.time()),
+}
+    resp = session.post(
+        "https://app.apollo.io/api/v1/mixed_companies/facets", json=json_data
+    )
+    print(resp.url)
+    json_dict = resp.json()
+    print(json_dict)
+    for org_dict in json_dict["faceting"].get("num_employees_facets",[]):
+        value = org_dict.get("value")
+        count = org_dict.get("count")
+        print(value,count)
 
 def main():
     username = "hieule1191997@gmail.com"
     password = "minhhieu1997"
-    query = "add"
     session, view_id = create_session(username, password)
 
-    print(session.cookies)
-    scrape_people_data(session, view_id, query)
+    # getLocation(session,query)
+    for i in string.ascii_lowercase:
+            getJobTitle(session,i)
+            # scrape_company_data(session, view_id, i+j)
+            # getLinkinIndustryKeywords(session, view_id, i+j)
+    # getEmployeeNumber(session, view_id, query)
 
 
 if __name__ == '__main__':
