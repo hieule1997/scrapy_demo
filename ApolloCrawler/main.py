@@ -84,7 +84,6 @@ def scrape_company_data(session, view_id, query, output_csv_path):
     for i in range(5):
         resp = session.post(
             "https://app.apollo.io/api/v1/mixed_companies/search", json=json_data
-            # "https://app.apollo.io/api/v1/mixed_people/search", json=json_data
         )
         print(resp.url)
 

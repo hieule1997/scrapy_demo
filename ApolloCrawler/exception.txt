@@ -1,9 +1,2 @@
-{"error": "Please sign up with a corporate domain or a paying plan to do more searches. Functionalities are currently restricted on free email domains.", "skip_alert_dialog": true, "code": "upgrade_plan"}
-{"error": "Please sign up with a corporate domain or a paying plan to do more searches. Functionalities are currently restricted on free email domains.", "skip_alert_dialog": true, "code": "upgrade_plan"}
-{"error": "Per Page Limit Crossed."}
-{"error": "Please sign up with a corporate domain or a paying plan to do more searches. Functionalities are currently restricted on free email domains.", "skip_alert_dialog": true, "code": "upgrade_plan"}
-{"error": "Please sign up with a corporate domain or a paying plan to do more searches. Functionalities are currently restricted on free email domains.", "skip_alert_dialog": true, "code": "upgrade_plan"}
-{"error": "Please sign up with a corporate domain or a paying plan to do more searches. Functionalities are currently restricted on free email domains.", "skip_alert_dialog": true, "code": "upgrade_plan"}
-{"error": "Please sign up with a corporate domain or a paying plan to do more searches. Functionalities are currently restricted on free email domains.", "skip_alert_dialog": true, "code": "upgrade_plan"}
-{"error": "Please sign up with a corporate domain or a paying plan to do more searches. Functionalities are currently restricted on free email domains.", "skip_alert_dialog": true, "code": "upgrade_plan"}
-{"error": "Please sign up with a corporate domain or a paying plan to do more searches. Functionalities are currently restricted on free email domains.", "skip_alert_dialog": true, "code": "upgrade_plan"}
+{"error": "Your search parameters are entered incorrectly. Did you try to edit the URL directly?", "skip_alert_dialog": false}
+{"error": "Your search parameters are entered incorrectly. Did you try to edit the URL directly?", "skip_alert_dialog": false}
